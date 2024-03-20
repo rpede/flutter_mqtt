@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mqtt_source",
+            "name": "iot_light",
             "request": "launch",
             "type": "dart"
         }
