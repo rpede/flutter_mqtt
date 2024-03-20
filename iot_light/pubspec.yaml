@@ -15,5 +15,5 @@ dev_dependencies:
   test: ^1.21.0
 dependencies:
   mqtt_client: ^10.2.0
-  mqtt_protocol:
-    path: "../mqtt_protocol"
+  light_protocol:
+    path: "../light_protocol"

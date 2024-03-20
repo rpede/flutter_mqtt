@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:light_controller/mqtt_bloc.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:mqtt_protocol/mqtt_protocol.dart';
+import 'package:light_protocol/light_protocol.dart';
 
 const server = "10.0.2.2";
 const port = 1883;

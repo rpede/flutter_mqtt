@@ -1,9 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:mqtt_protocol/messages.dart';
-import 'package:mqtt_protocol/mqtt_protocol.dart';
-import 'package:mqtt_protocol/protocol.dart';
+import 'package:light_protocol/light_protocol.dart';
 
 enum LightStatus {
   on,
