@@ -2,6 +2,7 @@ name: iot_light
 description: A sample command-line application.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
+publish_to: none
 
 environment:
   sdk: '>=2.19.4 <3.0.0'
@@ -13,4 +14,6 @@ dev_dependencies:
   lints: ^2.0.0
   test: ^1.21.0
 dependencies:
-  mqtt_client: ^9.8.0
+  mqtt_client: ^10.2.0
+  mqtt_protocol:
+    path: "../mqtt_protocol"

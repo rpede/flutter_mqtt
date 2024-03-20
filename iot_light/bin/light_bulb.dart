@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:iot_light/device.dart';
+import '../../mqtt_protocol/lib/device.dart';
 
 class LightBulb extends Device {
   Power _power;

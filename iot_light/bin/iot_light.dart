@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:iot_light/mqtt_json_adapter.dart';
-import 'package:iot_light/protocol.dart';
+import '../../mqtt_protocol/lib/mqtt_json_adapter.dart';
+import '../../mqtt_protocol/lib/protocol.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
