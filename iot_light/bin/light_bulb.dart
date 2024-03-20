@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../mqtt_protocol/lib/device.dart';
+import 'package:mqtt_protocol/mqtt_protocol.dart';
 
 class LightBulb extends Device {
   Power _power;
@@ -12,15 +12,14 @@ class LightBulb extends Device {
 
   @override
   Future<void> turnOff() async {
-    final graphic = await File('assets/light_off').readAsString();
+    final graphic = await File('assets/light_off.txt').readAsString();
     print(graphic);
-    _power = Power.on;
+    _power = Power.off;
   }
 
   @override
   Future<void> turnOn() async {
-    final graphic = await File('assets/light_on').readAsString();
-    print(graphic);
-    _power = Power.off;
+    final graphic = await File('assets/light_on.txt').readAsString(); print(graphic);
+    _power = Power.on;
   }
 }

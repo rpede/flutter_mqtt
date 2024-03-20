@@ -15,7 +15,7 @@ class DeviceProtocol extends JsonProtocol<Command, Status> {
   Command convertFromJsonIn(String topic, jsonIn) => Command.fromJson(jsonIn);
 
   @override
-  convertToJsonOut(String topic, Status messageOut) => messageOut.toJson();
+  Map<String, dynamic> convertToJsonOut(String topic, Status messageOut) => messageOut.toJson();
 
   @override
   processMessage(
@@ -41,6 +41,6 @@ mixin ControllerProtocol implements JsonProtocol<Status, Command> {
   Status convertFromJsonIn(String topic, jsonIn) => Status.fromJson(jsonIn);
 
   @override
-  dynamic convertToJsonOut(String topic, Command messageOut) =>
+  Map<String, dynamic> convertToJsonOut(String topic, Command messageOut) =>
       messageOut.toJson();
 }

@@ -11,6 +11,8 @@ const port = 1883;
 void main() async {
   final client =
       MqttServerClient.withPort(server, 'light-controller-app', port);
+
+  client.logging(on: true);
   await client.connect(/* credentials */);
   client.subscribe(controllerTopic, MqttQos.atLeastOnce);
 
