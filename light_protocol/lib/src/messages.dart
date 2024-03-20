@@ -14,10 +14,10 @@ class Command {
       : action = Action.values.byName(json['action']);
 }
 
-class Status {
+class DeviceStatus {
   final Power status;
-  const Status(this.status);
+  const DeviceStatus(this.status);
   Map<String, dynamic> toJson() => {'status': status.name};
-  Status.fromJson(Map<String, dynamic> json)
+  DeviceStatus.fromJson(Map<String, dynamic> json)
       : status = Power.values.byName(json['status']);
 }

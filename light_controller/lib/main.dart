@@ -1,16 +1,32 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:light_controller/mqtt_bloc.dart';
+import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:light_protocol/light_protocol.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 
-const server = "10.0.2.2";
+const serverForEmulator = "10.0.2.2";
+const server = "localhost";
 const port = 1883;
+const wsPort = 8080;
+
+MqttClient createClient() {
+  if (kIsWeb) {
+    return MqttBrowserClient.withPort("ws://$server/", 'light-controller-app', wsPort);
+  } else if (Platform.isAndroid) {
+    return MqttServerClient.withPort(
+        serverForEmulator, 'light-controller-app', port);
+  } else {
+    return MqttServerClient.withPort(server, 'light-controller-app', port);
+  }
+}
 
 void main() async {
-  final client =
-      MqttServerClient.withPort(server, 'light-controller-app', port);
+  final client = createClient();
 
   client.logging(on: true);
   await client.connect(/* credentials */);

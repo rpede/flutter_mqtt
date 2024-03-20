@@ -34,7 +34,7 @@ class AppState {
 }
 
 class MqttBloc extends Cubit<AppState> with ControllerProtocol {
-  final MqttServerClient client;
+  final MqttClient client;
   late MqttJsonAdapter adapter;
   late PublishMessage<Command> publish;
 
@@ -61,7 +61,7 @@ class MqttBloc extends Cubit<AppState> with ControllerProtocol {
 
   @override
   processMessage(
-      String topic, Status messageIn, PublishMessage<Command> publish) {
+      String topic, DeviceStatus messageIn, PublishMessage<Command> publish) {
     emit(state.copyWith(
       light: switch (messageIn.status) {
         Power.on => LightStatus.on,

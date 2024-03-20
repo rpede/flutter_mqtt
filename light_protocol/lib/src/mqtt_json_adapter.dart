@@ -2,19 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:mqtt_client/mqtt_client.dart';
+import 'protocol.dart';
 
 typedef PublishMessage<Tout> = int Function(String topic, Tout messageOut);
 
-abstract class JsonProtocol<Tin, Tout> {
-  initialize(PublishMessage<Tout> publish) {}
-  processMessage(String topic, Tin messageIn, PublishMessage<Tout> publish);
-  Tin convertFromJsonIn(String topic, dynamic jsonIn);
-  Map<String, dynamic> convertToJsonOut(String topic, Tout messageOut);
-}
-
 class MqttJsonAdapter<Tin, Tout> {
   final MqttClient client;
-  final JsonProtocol<Tin, Tout> protocol;
+  final BaseJsonProtocol<Tin, Tout> protocol;
   late StreamSubscription? _subscription;
 
   MqttJsonAdapter({required this.client, required this.protocol}) {
