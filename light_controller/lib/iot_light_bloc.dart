@@ -56,8 +56,8 @@ class IotLightBloc extends Cubit<AppState> {
       ;
   }
 
-  Future<void> connect() async {
-    await mqttClient.connect(/* credentials */);
+  Future<void> connect([String? username, String? password]) async {
+    await mqttClient.connect(username, password);
 
     protocol = ControllerProtocol(mqttClient: mqttClient);
 

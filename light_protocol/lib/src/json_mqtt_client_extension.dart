@@ -3,11 +3,9 @@ import 'dart:convert';
 
 import 'package:mqtt_client/mqtt_client.dart';
 
-typedef JsonMessage<T> = ({String topic, T message});
-
 extension JsonMqttClientExtension on MqttClient {
-  /// Stream of JSON deserialized messages on which all subscribed topic updates
-  /// are published to.
+  /// The stream on which all subscribed topic updates are published to,
+  /// deserialized from JSON.
   ///
   /// **Important** `fromJson` must be compatible with messages on all
   /// subscribed topics.
@@ -41,3 +39,5 @@ extension JsonMqttClientExtension on MqttClient {
     return publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 }
+
+typedef JsonMessage<T> = ({String topic, T message});

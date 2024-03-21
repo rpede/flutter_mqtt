@@ -31,7 +31,8 @@ void main() async {
   mqttClient.logging(on: true);
 
   runApp(BlocProvider<IotLightBloc>(
-    create: (context) => IotLightBloc(mqttClient: mqttClient)..connect(),
+    create: (context) =>
+        IotLightBloc(mqttClient: mqttClient)..connect(/* credentials */),
     child: const MyApp(),
   ));
 }
