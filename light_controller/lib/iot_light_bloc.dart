@@ -10,9 +10,15 @@ enum LightStatus {
   unknown,
 }
 
+enum ConnectionStatus {
+  connected,
+  disconnected,
+  connecting,
+}
+
 /// Combines MQTT connection status with power status of IoT light.
 class AppState {
-  final MqttConnectionState connection;
+  final ConnectionStatus connection;
   final LightStatus light;
 
   AppState({
@@ -22,12 +28,12 @@ class AppState {
 
   factory AppState.initial() {
     return AppState(
-      connection: MqttConnectionState.disconnected,
+      connection: ConnectionStatus.disconnected,
       light: LightStatus.unknown,
     );
   }
 
-  copyWith({MqttConnectionState? connection, LightStatus? light}) {
+  copyWith({ConnectionStatus? connection, LightStatus? light}) {
     return AppState(
       connection: connection ?? this.connection,
       light: light ?? this.light,
@@ -43,10 +49,10 @@ class IotLightBloc extends Cubit<AppState> {
   IotLightBloc({required this.mqttClient}) : super(AppState.initial()) {
     mqttClient
       ..autoReconnect = true
-      ..onConnected = (() => connection(MqttConnectionState.connected))
-      ..onDisconnected = (() => connection(MqttConnectionState.disconnected))
-      ..onAutoReconnect = (() => connection(MqttConnectionState.connecting))
-      ..onAutoReconnected = (() => connection(MqttConnectionState.connected))
+      ..onConnected = (() => _connectionStatus(ConnectionStatus.connected))
+      ..onDisconnected = (() => _connectionStatus(ConnectionStatus.disconnected))
+      ..onAutoReconnect = (() => _connectionStatus(ConnectionStatus.connecting))
+      ..onAutoReconnected = (() => _connectionStatus(ConnectionStatus.connected))
       ;
   }
 
@@ -65,8 +71,8 @@ class IotLightBloc extends Cubit<AppState> {
     });
   }
 
-  void connection(MqttConnectionState connection) {
-    emit(state.copyWith(connection: connection));
+  void _connectionStatus(ConnectionStatus status) {
+    emit(state.copyWith(connection: status));
   }
 
   void switchLight(bool value) {
