@@ -1,52 +1,57 @@
+import 'dart:async';
+
+import 'package:mqtt_client/mqtt_client.dart';
 import 'device.dart';
 import 'messages.dart';
-import 'mqtt_json_adapter.dart';
+import 'json_mqtt_client_x.dart';
 
 const controllerTopic = 'light-controller';
 const deviceTopic = 'light-bulb';
+const qos = MqttQos.atLeastOnce;
 
-abstract class BaseJsonProtocol<Tin, Tout> {
-  initialize(PublishMessage<Tout> publish) {}
-  processMessage(String topic, Tin messageIn, PublishMessage<Tout> publish);
-  Tin convertFromJsonIn(String topic, dynamic jsonIn);
-  Map<String, dynamic> convertToJsonOut(String topic, Tout messageOut);
-}
-
-class DeviceProtocol extends BaseJsonProtocol<Command, DeviceStatus> {
+class DeviceProtocol {
   final Device device;
-  final String controllerTopic;
+  final MqttClient mqttClient;
+  late StreamSubscription<DeviceStatus> _subscription;
 
-  DeviceProtocol({required this.device, required this.controllerTopic});
+  DeviceProtocol({required this.mqttClient, required this.device}) {
+    mqttClient.subscribe(deviceTopic, qos);
+    _subscription = mqttClient
+        .jsonUpdates(fromJson: Command.fromJson)
+        .asyncMap((event) async {
+      final command = event.message;
+      switch (command.action) {
+        case Action.turnOn:
+          await device.turnOn();
+          break;
+        case Action.turnOff:
+          await device.turnOff();
+          break;
+        case Action.reportStatus:
+          break;
+      }
+      return DeviceStatus(device.power);
+    }).listen((status) {
+      mqttClient.publishJsonMessage(controllerTopic, status.toJson());
+    });
+  }
 
-  @override
-  Command convertFromJsonIn(String topic, jsonIn) => Command.fromJson(jsonIn);
-
-  @override
-  Map<String, dynamic> convertToJsonOut(String topic, DeviceStatus messageOut) =>
-      messageOut.toJson();
-
-  @override
-  processMessage(
-      String topic, Command messageIn, PublishMessage<DeviceStatus> publish) async {
-    switch (messageIn.action) {
-      case Action.turnOn:
-        await device.turnOn();
-        break;
-      case Action.turnOff:
-        await device.turnOff();
-        break;
-      case Action.reportStatus:
-        break;
-    }
-    publish(controllerTopic, DeviceStatus(device.power));
+  Future<void> dispose() async {
+    await _subscription.cancel();
   }
 }
 
-mixin ControllerProtocol implements BaseJsonProtocol<DeviceStatus, Command> {
-  @override
-  DeviceStatus convertFromJsonIn(String topic, jsonIn) => DeviceStatus.fromJson(jsonIn);
+class ControllerProtocol {
+  final MqttClient mqttClient;
 
-  @override
-  Map<String, dynamic> convertToJsonOut(String topic, Command messageOut) =>
-      messageOut.toJson();
+  ControllerProtocol({required this.mqttClient}) {
+    mqttClient.subscribe(controllerTopic, qos);
+  }
+
+  Stream<DeviceStatus> get statusStream => mqttClient
+      .jsonUpdates<DeviceStatus>(fromJson: DeviceStatus.fromJson)
+      .map((event) => event.message);
+
+  publishCommand(Command command) =>
+      mqttClient.publishJsonMessage(deviceTopic, command.toJson());
 }

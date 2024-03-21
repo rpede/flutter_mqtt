@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:light_protocol/light_protocol.dart';
 
@@ -22,21 +21,13 @@ Future<void> waitForEnter() {
 void main(List<String> arguments) async {
   final device = LightBulb();
 
-  final client = MqttServerClient.withPort(server, "smart-light-bulb", port);
-
+  final mqttClient = MqttServerClient.withPort(server, "smart-light-bulb", port);
   // client.logging(on: true);
-  await client.connect(/* credentials */);
-  client.subscribe(deviceTopic, MqttQos.atLeastOnce);
-  final adapter = MqttJsonAdapter(
-    client: client,
-    protocol: DeviceProtocol(
-      device: device,
-      controllerTopic: controllerTopic,
-    ),
-  );
+  await mqttClient.connect(/* credentials */);
+  final protocol = DeviceProtocol(device: device, mqttClient: mqttClient);
 
   await waitForEnter();
 
-  await adapter.dispose();
-  client.disconnect();
+  await protocol.dispose();
+  mqttClient.disconnect();
 }

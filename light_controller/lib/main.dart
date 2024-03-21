@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:light_controller/mqtt_bloc.dart';
+import 'package:light_controller/iot_light_bloc.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:light_protocol/light_protocol.dart';
@@ -16,7 +16,8 @@ const wsPort = 8080;
 
 MqttClient createClient() {
   if (kIsWeb) {
-    return MqttBrowserClient.withPort("ws://$server/", 'light-controller-app', wsPort);
+    return MqttBrowserClient.withPort(
+        "ws://$server/", 'light-controller-app', wsPort);
   } else if (Platform.isAndroid) {
     return MqttServerClient.withPort(
         serverForEmulator, 'light-controller-app', port);
@@ -26,14 +27,12 @@ MqttClient createClient() {
 }
 
 void main() async {
-  final client = createClient();
+  final mqttClient = createClient();
 
-  client.logging(on: true);
-  await client.connect(/* credentials */);
-  client.subscribe(controllerTopic, MqttQos.atLeastOnce);
+  mqttClient.logging(on: true);
 
-  runApp(BlocProvider<MqttBloc>(
-    create: (context) => MqttBloc(client: client),
+  runApp(BlocProvider<IotLightBloc>(
+    create: (context) => IotLightBloc(mqttClient: mqttClient)..connect(),
     child: const MyApp(),
   ));
 }
@@ -48,7 +47,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BlocBuilder<MqttBloc, AppState>(
+      home: BlocBuilder<IotLightBloc, AppState>(
         builder: (context, state) {
           final h1 = Theme.of(context).textTheme.displayLarge;
           return Scaffold(
@@ -67,7 +66,7 @@ class MyApp extends StatelessWidget {
                   Switch(
                       value: state.light == LightStatus.on,
                       onChanged: (value) {
-                        context.read<MqttBloc>().switchLight(value);
+                        context.read<IotLightBloc>().switchLight(value);
                       })
                 ],
               ),

@@ -15,9 +15,9 @@ class Command {
 }
 
 class DeviceStatus {
-  final Power status;
-  const DeviceStatus(this.status);
-  Map<String, dynamic> toJson() => {'status': status.name};
+  final Power power;
+  const DeviceStatus(this.power);
+  Map<String, dynamic> toJson() => {'power': power.name};
   DeviceStatus.fromJson(Map<String, dynamic> json)
-      : status = Power.values.byName(json['status']);
+      : power = Power.values.byName(json['power']);
 }
