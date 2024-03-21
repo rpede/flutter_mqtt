@@ -10,6 +10,7 @@ enum LightStatus {
   unknown,
 }
 
+/// Combines MQTT connection status with power status of IoT light.
 class AppState {
   final MqttConnectionState connection;
   final LightStatus light;
@@ -38,11 +39,15 @@ class IotLightBloc extends Cubit<AppState> {
   final MqttClient mqttClient;
   late ControllerProtocol protocol;
   late StreamSubscription<DeviceStatus> _subscription;
+
   IotLightBloc({required this.mqttClient}) : super(AppState.initial()) {
     mqttClient
+      ..autoReconnect = true
       ..onConnected = (() => connection(MqttConnectionState.connected))
-      ..onDisconnected = (() => connection(MqttConnectionState.disconnected));
-
+      ..onDisconnected = (() => connection(MqttConnectionState.disconnected))
+      ..onAutoReconnect = (() => connection(MqttConnectionState.connecting))
+      ..onAutoReconnected = (() => connection(MqttConnectionState.connected))
+      ;
   }
 
   Future<void> connect() async {

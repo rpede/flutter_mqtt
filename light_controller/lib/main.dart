@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:light_controller/iot_light_bloc.dart';
 import 'package:mqtt_client/mqtt_browser_client.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:light_protocol/light_protocol.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 const serverForEmulator = "10.0.2.2";

@@ -5,7 +5,13 @@ import 'package:mqtt_client/mqtt_client.dart';
 
 typedef JsonMessage<T> = ({String topic, T message});
 
-extension JsonMqttClientX on MqttClient {
+extension JsonMqttClientExtension on MqttClient {
+
+  /// Stream of JSON deserialized messages on which all subscribed topic updates
+  /// are published to.
+  /// 
+  /// **Important** `fromJson` must be compatible with messages on all
+  /// subscribed topics.
   Stream<JsonMessage<T>> jsonUpdates<T>(
           {required T Function(Map<String, dynamic> json) fromJson}) =>
       updates!.expand((updates) sync* {
@@ -26,7 +32,7 @@ extension JsonMqttClientX on MqttClient {
         }
       });
 
-  /// Callback for publishing a message
+  /// Publish JSON message
   int publishJsonMessage<T>(String topic, Map<String, dynamic> json) {
     // Serialize message json
     final payload = jsonEncode(json);

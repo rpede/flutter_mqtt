@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'device.dart';
 import 'messages.dart';
-import 'json_mqtt_client_x.dart';
+import 'json_mqtt_client_extension.dart';
 
 const controllerTopic = 'light-controller';
 const deviceTopic = 'light-bulb';
 const qos = MqttQos.atLeastOnce;
 
+/// Implements the device side of the protocol.
 class DeviceProtocol {
   final Device device;
   final MqttClient mqttClient;
@@ -41,6 +42,7 @@ class DeviceProtocol {
   }
 }
 
+// Implements the controller (Flutter app) side of the protocol.
 class ControllerProtocol {
   final MqttClient mqttClient;
 

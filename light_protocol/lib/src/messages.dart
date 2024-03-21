@@ -6,6 +6,7 @@ enum Action {
   reportStatus,
 }
 
+/// Controller sends commands to device
 class Command {
   final Action action;
   const Command(this.action);
@@ -14,6 +15,7 @@ class Command {
       : action = Action.values.byName(json['action']);
 }
 
+/// Device responds with status update
 class DeviceStatus {
   final Power power;
   const DeviceStatus(this.power);
