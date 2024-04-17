@@ -4,42 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:light_protocol/light_protocol.dart';
 
-enum LightStatus {
-  on,
-  off,
-  unknown,
-}
-
-enum ConnectionStatus {
-  connected,
-  disconnected,
-  connecting,
-}
-
-/// Combines MQTT connection status with power status of IoT light.
-class AppState {
-  final ConnectionStatus connection;
-  final LightStatus light;
-
-  AppState({
-    required this.connection,
-    required this.light,
-  });
-
-  factory AppState.initial() {
-    return AppState(
-      connection: ConnectionStatus.disconnected,
-      light: LightStatus.unknown,
-    );
-  }
-
-  copyWith({ConnectionStatus? connection, LightStatus? light}) {
-    return AppState(
-      connection: connection ?? this.connection,
-      light: light ?? this.light,
-    );
-  }
-}
+import 'iot_light_state.dart';
 
 class IotLightBloc extends Cubit<AppState> {
   final MqttClient mqttClient;
@@ -50,10 +15,11 @@ class IotLightBloc extends Cubit<AppState> {
     mqttClient
       ..autoReconnect = true
       ..onConnected = (() => _connectionStatus(ConnectionStatus.connected))
-      ..onDisconnected = (() => _connectionStatus(ConnectionStatus.disconnected))
+      ..onDisconnected =
+          (() => _connectionStatus(ConnectionStatus.disconnected))
       ..onAutoReconnect = (() => _connectionStatus(ConnectionStatus.connecting))
-      ..onAutoReconnected = (() => _connectionStatus(ConnectionStatus.connected))
-      ;
+      ..onAutoReconnected =
+          (() => _connectionStatus(ConnectionStatus.connected));
   }
 
   Future<void> connect([String? username, String? password]) async {
