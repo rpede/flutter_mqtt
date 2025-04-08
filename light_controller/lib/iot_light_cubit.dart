@@ -43,6 +43,7 @@ class IotLightBloc extends Cubit<AppState> {
 
   void switchLight(bool value) {
     protocol.publishCommand(Command(value ? Action.turnOn : Action.turnOff));
+    emit(state.copyWith(light: LightStatus.unknown));
   }
 
   @override
