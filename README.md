@@ -31,7 +31,7 @@ mosquitto -c mosquitto.conf
 
 [Instructions here](/smart_light_esp32/README.md)
 
-**IoT Light**
+**Smart light Dart**
 
 ```sh
 cd smart_light_dart
